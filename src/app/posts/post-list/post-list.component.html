@@ -9,12 +9,14 @@
             <img [src]="post.imagePath" [alt]="post.title">
         </div>
         <p>{{ post.content }} </p>
+        @if(authService.isLoggedIn()()) {
         <mat-action-row>
             <a mat-button color="primary"
                 [routerLink]="['/edit/', post.id]">EDIT</a>
             <button mat-raised-button color="warn"
                 (click)="onDelete(post.id!)">DELETE</button>
         </mat-action-row>
+      }
     </mat-expansion-panel>
     }
 </mat-accordion>

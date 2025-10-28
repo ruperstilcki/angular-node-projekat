@@ -8,8 +8,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 
 import { PostService } from '../../services/post.service';
-import { Pagination, Post } from '../post.model';
+import { Pagination, Post } from '../../models/post.model';
 import { createPageEvent } from '../../helper';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -20,6 +21,7 @@ import { createPageEvent } from '../../helper';
 export class PostListComponent implements OnInit {
   // Inject PostService instance
   postService = inject(PostService);
+  authService = inject(AuthService);
 
   // Reactive signal for pagination configuration (total count, current page, etc.)
   readonly paginator: Signal<Pagination> = this.postService.getPaginationConfig();

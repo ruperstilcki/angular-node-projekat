@@ -3,9 +3,11 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Route handler for posts
 const postsRoutes = require('./routes/posts');
+const userRoutes = require('./routes/user');
 
 // import Credentials and setup for MongoDB
 require('dotenv').config();
@@ -29,22 +31,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Serve static image files from backend/images directory
 app.use("/images", express.static(path.join("backend/images")));
 
-// CORS headers to allow frontend requests from any origin
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PATCH, DELETE, PUT, OPTIONS'
-  );
-  next();
-});
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:4200', // or '*' for any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+}));
 
 // Mount posts route handler under /api/posts path
 app.use("/api/posts", postsRoutes);
+app.use("/api/user", userRoutes);
 
 // Export the Express app
 module.exports = app;

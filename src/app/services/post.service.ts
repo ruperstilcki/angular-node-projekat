@@ -3,7 +3,7 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, tap } from 'rxjs';
-import { Pagination, Post, PostRespons } from '../posts/post.model';
+import { Pagination, Post, PostRespons } from '../models/post.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class PostService {
   private readonly posts: WritableSignal<Post[]> = signal<Post[]>([]);
 
   // Writable signal to handle pagination configuration and state
-  private paginator: WritableSignal<Pagination> = signal<Pagination>({
+  private readonly paginator: WritableSignal<Pagination> = signal<Pagination>({
     totalPosts: 0,               // Total number of posts in the backend
     postPerPage: 2,              // Default number of posts per page
     pageSizeOptions: [1, 2, 5, 10], // Options for paginator dropdown
@@ -148,4 +148,4 @@ export class PostService {
     return this.http.delete<{ message: string }>('http://localhost:3000/api/posts/' + postId);
   }
 
-} 
+}

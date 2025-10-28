@@ -19,7 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { filter, map, switchMap, tap } from 'rxjs';
 import { mimeType } from './mime-type.validators';
 import { PostService } from '../../services/post.service';
-import { Post } from '../post.model';
+import { Post } from '../../models/post.model';
 
 @Component({
   selector: 'app-post-create',
