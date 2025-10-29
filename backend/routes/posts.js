@@ -1,15 +1,15 @@
-const express = require('express');
-const multer = require('multer');
-const Post = require('../models/post'); // Mongoose model for Post collection
-const checkAuth = require('../middleware/check-auth');
+const express = require("express");
+const multer = require("multer");
+const Post = require("../models/post"); // Mongoose model for Post collection
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
 // Define allowed image MIME types and corresponding file extensions
 const MIME_TYPE_MAP = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg'
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
 };
 
 // Configure multer for file upload handling
@@ -21,10 +21,10 @@ const storage = multer.diskStorage({
     cb(error, "backend/images"); // Path where images will be stored
   },
   filename: (req, file, cb) => {
-    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const name = file.originalname.toLowerCase().split(" ").join("-");
     const ext = MIME_TYPE_MAP[file.mimetype];
-    cb(null, name + '-' + Date.now() + '.' + ext); // Unique filename
-  }
+    cb(null, name + "-" + Date.now() + "." + ext); // Unique filename
+  },
 });
 
 // ----------- CREATE POST -------------
@@ -33,17 +33,18 @@ router.post(
   checkAuth,
   multer({ storage: storage }).single("image"), // Expect a single uploaded file under "image" field
   (req, res, next) => {
-    const url = req.protocol + '://' + req.get("host"); // Generate server URL for image
+    const url = req.protocol + "://" + req.get("host"); // Generate server URL for image
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      imagePath: url + "/images/" + req.file.filename // Save relative image path
+      imagePath: url + "/images/" + req.file.filename, // Save relative image path
+      creator: req.userData.userId,
     });
-    post.save().then(createdPost => {
+    post.save().then((createdPost) => {
       const plainPost = createdPost.toObject(); // Convert mongoose document to plain object
       res.status(201).json({
-        message: 'Post added successfully',
-        post: { ...plainPost, id: plainPost._id } // Rename _id to id for frontend compatibility
+        message: "Post added successfully",
+        post: { ...plainPost, id: plainPost._id }, // Rename _id to id for frontend compatibility
       });
     });
   }
@@ -57,19 +58,27 @@ router.put(
   (req, res, next) => {
     let imagePath = req.body.imagePath; // Keep existing image if none uploaded
     if (req.file) {
-      const url = req.protocol + '://' + req.get("host");
+      const url = req.protocol + "://" + req.get("host");
       imagePath = url + "/images/" + req.file.filename;
     }
     const post = new Post({
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
-      imagePath
+      imagePath,
+      creator: req.userData.userId
     });
-    Post.updateOne({ _id: req.params.id }, post).then(result => {
-      const plainPost = post.toObject();
-      const { _id: string, ...newPost } = { ...plainPost, id: plainPost._id };
-      res.status(200).json({ message: "Update successful!", post: newPost });
+    Post.updateOne(
+      { _id: req.params.id, creator: req.userData.userId },
+      post
+    ).then((result) => {
+      if (result.modifiedCount > 0) {
+        const plainPost = post.toObject();
+        const { _id, ...newPost } = { ...plainPost, id: plainPost._id };
+        res.status(200).json({ message: "Update successful!", post: newPost });
+      } else {
+        res.status(401).json({ message: "Not authorized!" });
+      }
     });
   }
 );
@@ -96,7 +105,7 @@ router.get("", (req, res, next) => {
       res.status(200).json({
         message: "Posts fetched successfully",
         posts: fetchedPosts,
-        maxPosts: count
+        maxPosts: count,
       });
     });
 });
@@ -114,9 +123,15 @@ router.get("/:id", (req, res, next) => {
 
 // ----------- DELETE POST -------------
 router.delete("/:id", checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then((result) => {
-    res.status(200).json({ message: 'Post deleted!' });
-  });
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(
+    (result) => {
+      if (result.deletedCount > 0) {
+        res.status(200).json({ message: "Deletion successful!" });
+      } else {
+        res.status(401).json({ message: "Not authorized!" });
+      }
+    }
+  );
 });
 
 module.exports = router;

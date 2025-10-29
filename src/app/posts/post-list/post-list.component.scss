@@ -8,12 +8,13 @@
 }
 
 .post-image {
-    width: 100%;
+    width: 100%; /* container full width */
 }
 
 .post-image img {
-    width: 100%;
+    // width: 100%;
     box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
+    display: block; /* remove inline gap */
 }
 
 mat-paginator {

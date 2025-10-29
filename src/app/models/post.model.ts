@@ -3,13 +3,15 @@ export interface Post {
     title: string,
     content: string,
     imagePath?: string,
+    creator?: string
 }
 
 export interface PostRespons {
     _id: string,
     title: string,
     content: string,
-    imagePath?: string
+    imagePath?: string,
+    creator?: string
 }
 
 export interface Pagination {

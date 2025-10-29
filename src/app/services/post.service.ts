@@ -83,7 +83,8 @@ export class PostService {
         title: post.title,
         content: post.content,
         id: post._id,
-        imagePath: post.imagePath
+        imagePath: post.imagePath,
+        creator: post.creator
       }))),
       // Return empty list if HTTP call fails
       catchError(() => of([]))
