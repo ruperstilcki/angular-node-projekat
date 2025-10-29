@@ -16,7 +16,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-post-list',
   imports: [CommonModule, MatExpansionModule, RouterLink, MatPaginatorModule, MatButtonModule],
   templateUrl: './post-list.component.html',
-  styleUrl: './post-list.component.scss',
+  styleUrl: './post-list.component.scss'
 })
 export class PostListComponent implements OnInit {
   // Inject PostService instance
@@ -63,5 +63,4 @@ export class PostListComponent implements OnInit {
   initPage() {
     this.onChangedPage(createPageEvent(0, 2));
   }
-
 }

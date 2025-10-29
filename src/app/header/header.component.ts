@@ -6,16 +6,14 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-header',
-  imports: [ MatToolbarModule, RouterLink, MatButtonModule ],
+  imports: [MatToolbarModule, RouterLink, MatButtonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-
   readonly authService = inject(AuthService);
 
-  onLogout(){
-    this.authService.logOut()
+  onLogout() {
+    this.authService.logOut();
   }
-
 }

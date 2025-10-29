@@ -5,7 +5,7 @@ import { AuthData, AuthDataResponse, AuthServiceDataModel } from '../models/auth
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -30,41 +30,31 @@ export class AuthService {
 
   createUser(authData: AuthData): Observable<string> {
     return this.http
-      .post<{ message: string; result: AuthData }>(
-        'http://localhost:3000/api/user/signup/',
-        authData
-      )
-      .pipe(map((res) => res.message));
+      .post<{ message: string; result: AuthData }>('http://localhost:3000/api/user/signup/', authData)
+      .pipe(map(res => res.message));
   }
 
-  getUserId(){
+  getUserId() {
     return this.userId();
   }
 
-  setUserId(id: string | null): void{
+  setUserId(id: string | null): void {
     this.userId.set(id);
   }
 
   login(authData: AuthData): Observable<string> {
-    return this.http
-      .post<AuthDataResponse>(
-        'http://localhost:3000/api/user/login/',
-        authData
-      )
-      .pipe(
-        tap((res: AuthDataResponse) => {
-          this.setAuthTimer(res.expiresIn * 1000);
-          const expirationDate = new Date();
-          expirationDate.setSeconds(
-            expirationDate.getSeconds() + (res.expiresIn)
-          );
-          this.setToken(res.token);
-          this.saveAuthData(res.token, expirationDate, res.userId);
-          this.setUserId(res.userId)
-          this.router.navigate(['/']);
-        }),
-        map((res) => res.token)
-      );
+    return this.http.post<AuthDataResponse>('http://localhost:3000/api/user/login/', authData).pipe(
+      tap((res: AuthDataResponse) => {
+        this.setAuthTimer(res.expiresIn * 1000);
+        const expirationDate = new Date();
+        expirationDate.setSeconds(expirationDate.getSeconds() + res.expiresIn);
+        this.setToken(res.token);
+        this.saveAuthData(res.token, expirationDate, res.userId);
+        this.setUserId(res.userId);
+        this.router.navigate(['/']);
+      }),
+      map(res => res.token)
+    );
   }
 
   autoAuthUser(): void {

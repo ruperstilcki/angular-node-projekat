@@ -2,13 +2,7 @@
 
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +28,7 @@ import { Post } from '../../models/post.model';
     MatProgressSpinnerModule
   ],
   templateUrl: './post-create.component.html',
-  styleUrl: './post-create.component.scss',
+  styleUrl: './post-create.component.scss'
 })
 export class PostCreateComponent implements OnInit {
   // Inject dependencies
@@ -53,7 +47,7 @@ export class PostCreateComponent implements OnInit {
     id: [null],
     title: [null, [Validators.required, Validators.minLength(3)]],
     content: [null, Validators.required],
-    image: [null, [Validators.required], [mimeType]], // Async validator for image file type
+    image: [null, [Validators.required], [mimeType]] // Async validator for image file type
   });
 
   // Getters for easier access to form controls
@@ -71,12 +65,14 @@ export class PostCreateComponent implements OnInit {
 
   ngOnInit(): void {
     // If a postId param is present in route, fetch post data and populate form
-    this.route.paramMap.pipe(
-      map(paramMap => paramMap.get('postId') ?? null),
-      tap(postId => this.postId.set(postId)),
-      filter(postId => !!postId),
-      switchMap(postId => this.postService.getPostHttp(postId!)),
-    ).subscribe(post => this.buildForm(post));
+    this.route.paramMap
+      .pipe(
+        map(paramMap => paramMap.get('postId') ?? null),
+        tap(postId => this.postId.set(postId)),
+        filter(postId => !!postId),
+        switchMap(postId => this.postService.getPostHttp(postId!))
+      )
+      .subscribe(post => this.buildForm(post));
   }
 
   // Fill form with data when editing a post
@@ -133,5 +129,4 @@ export class PostCreateComponent implements OnInit {
       // No file selected (optional fallback logic)
     }
   }
-
 }

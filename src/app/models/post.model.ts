@@ -1,22 +1,22 @@
 export interface Post {
-    id: string | null,
-    title: string,
-    content: string,
-    imagePath?: string,
-    creator?: string
+  id: string | null;
+  title: string;
+  content: string;
+  imagePath?: string;
+  creator?: string;
 }
 
 export interface PostRespons {
-    _id: string,
-    title: string,
-    content: string,
-    imagePath?: string,
-    creator?: string
+  _id: string;
+  title: string;
+  content: string;
+  imagePath?: string;
+  creator?: string;
 }
 
 export interface Pagination {
-    totalPosts: number;
-    postPerPage: number;
-    pageSizeOptions: number[];
-    currentPage: number;
+  totalPosts: number;
+  postPerPage: number;
+  pageSizeOptions: number[];
+  currentPage: number;
 }

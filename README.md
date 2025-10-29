@@ -58,18 +58,17 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
-
 ## Start Express server
 
 npm run start:server
 
-## ###########################################################################################################################################################
+##
+
 ## How to run the project locally
 
 To run this project on your local machine, follow the steps below:
 
 1. **Install dependencies and set up environment configuration**
-
    - After cloning the repository, navigate to the project root folder in your terminal.
    - Run the following command to install all required dependencies:
 
@@ -104,4 +103,5 @@ To run this project on your local machine, follow the steps below:
      > This will start the frontend on `http://localhost:4200`, while the backend server will run on the port defined in your `.env` or fallback to `3000` by default.
 
 ---
-## ###########################################################################################################################################################
+
+##

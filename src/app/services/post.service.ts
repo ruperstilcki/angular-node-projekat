@@ -9,16 +9,15 @@ import { Pagination, Post, PostRespons } from '../models/post.model';
   providedIn: 'root'
 })
 export class PostService {
-
   // Writable signal to hold the list of posts
   private readonly posts: WritableSignal<Post[]> = signal<Post[]>([]);
 
   // Writable signal to handle pagination configuration and state
   private readonly paginator: WritableSignal<Pagination> = signal<Pagination>({
-    totalPosts: 0,               // Total number of posts in the backend
-    postPerPage: 2,              // Default number of posts per page
+    totalPosts: 0, // Total number of posts in the backend
+    postPerPage: 2, // Default number of posts per page
     pageSizeOptions: [1, 2, 5, 10], // Options for paginator dropdown
-    currentPage: 1               // Default to page 1
+    currentPage: 1 // Default to page 1
   });
 
   // Dependency injection for HTTP client
@@ -71,24 +70,32 @@ export class PostService {
    */
   getPostsHttp(): Observable<Post[]> {
     const queryParams = `?pageSize=${this.paginator().postPerPage}&page=${this.paginator().currentPage}`;
-    return this.http.get<{ message: string, posts: PostRespons[], maxPosts: number }>('http://localhost:3000/api/posts' + queryParams).pipe(
-      // Update total number of posts for paginator
-      tap(res => {
-        this.paginator.update(p => ({ ...p, totalPosts: res.maxPosts }));
-      }),
-      // Ensure we work with a default of empty array if undefined
-      map(res => res.posts ?? []),
-      // Map each post from backend model to frontend post model
-      map(postData => postData.map(post => ({
-        title: post.title,
-        content: post.content,
-        id: post._id,
-        imagePath: post.imagePath,
-        creator: post.creator
-      }))),
-      // Return empty list if HTTP call fails
-      catchError(() => of([]))
-    );
+    return this.http
+      .get<{
+        message: string;
+        posts: PostRespons[];
+        maxPosts: number;
+      }>('http://localhost:3000/api/posts' + queryParams)
+      .pipe(
+        // Update total number of posts for paginator
+        tap(res => {
+          this.paginator.update(p => ({ ...p, totalPosts: res.maxPosts }));
+        }),
+        // Ensure we work with a default of empty array if undefined
+        map(res => res.posts ?? []),
+        // Map each post from backend model to frontend post model
+        map(postData =>
+          postData.map(post => ({
+            title: post.title,
+            content: post.content,
+            id: post._id,
+            imagePath: post.imagePath,
+            creator: post.creator
+          }))
+        ),
+        // Return empty list if HTTP call fails
+        catchError(() => of([]))
+      );
   }
 
   /**
@@ -111,12 +118,12 @@ export class PostService {
    */
   addPostHttp(post: Post, image: File): Observable<string> {
     const postData = new FormData();
-    postData.append("title", post.title);
-    postData.append("content", post.content);
-    postData.append("image", image, post.title);
-    return this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts/', postData).pipe(
-      map(res => res.message)
-    );
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image, post.title);
+    return this.http
+      .post<{ message: string; post: Post }>('http://localhost:3000/api/posts/', postData)
+      .pipe(map(res => res.message));
   }
 
   /**
@@ -128,18 +135,18 @@ export class PostService {
     // If a new file is provided, use FormData
     if (typeof image === 'object') {
       postData = new FormData();
-      postData.append("id", post.id!);
-      postData.append("title", post.title);
-      postData.append("content", post.content);
-      postData.append("image", image, post.title);
+      postData.append('id', post.id!);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', image, post.title);
     } else {
       // Else send plain JSON with existing imagePath
       postData = { ...post, imagePath: image };
     }
 
-    return this.http.put<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + post.id, postData).pipe(
-      map(res => res.message)
-    );
+    return this.http
+      .put<{ message: string; post: Post }>('http://localhost:3000/api/posts/' + post.id, postData)
+      .pipe(map(res => res.message));
   }
 
   /**
@@ -148,5 +155,4 @@ export class PostService {
   deletePostHttp(postId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>('http://localhost:3000/api/posts/' + postId);
   }
-
 }

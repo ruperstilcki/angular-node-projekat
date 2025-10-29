@@ -1,0 +1,77 @@
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/www
+/platforms
+/plugins
+/aot
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+jspm_packages/
+/.npm
+/yarn-error.log
+yarn-debug.log*
+.pnp.*
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Angular specifično
+/.angular
+/.ngcc
+/storybook-out
+compodoc.json
+
+# Testovi i coverage
+/coverage
+*.lcov
+/test-results/
+
+# Logovi
+*.log
+logs/
+libpeerconnection.log
+testem.log
+
+# Runtime
+/connect.lock
+*.pid
+*.seed
+*.pid.lock
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Miscellaneous
+/typings
+.sass-cache/
+*.tsbuildinfo
+.cache/
+.parcel-cache/

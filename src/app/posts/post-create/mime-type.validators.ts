@@ -20,7 +20,7 @@ export const mimeType = (
 
   // If value is not a valid file object, skip validation
   if (typeof file === 'string' || !file) {
-    return new Observable((observer) => {
+    return new Observable(observer => {
       observer.next(null);
       observer.complete();
     });

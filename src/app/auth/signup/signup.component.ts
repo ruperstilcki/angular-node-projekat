@@ -8,25 +8,18 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, MatCardModule, MatButtonModule, ReactiveFormsModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
-
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
 
   // Reactive form definition
   form: FormGroup = this.fb.group({
     email: [null, [Validators.required, Validators.minLength(3), Validators.email]],
-    password: [null, Validators.required],
+    password: [null, Validators.required]
   });
 
   // Getters for easier access to form controls
@@ -38,9 +31,10 @@ export class SignupComponent {
     return this.form.get('password');
   }
 
-  onSignup(){
-    if(this.form.invalid) {return;}
+  onSignup() {
+    if (this.form.invalid) {
+      return;
+    }
     this.authService.createUser(this.form.getRawValue()).subscribe();
   }
-
 }
