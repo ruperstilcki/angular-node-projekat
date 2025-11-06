@@ -1,6 +1,10 @@
 {
   "name": "post",
   "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +12,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "format": "prettier --write .",
-    "start:server": "nodemon server.js"
+    "start:server": "node server.js"
   },
   "private": true,
   "dependencies": {

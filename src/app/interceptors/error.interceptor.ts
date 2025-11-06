@@ -5,7 +5,6 @@ import { catchError, throwError } from 'rxjs';
 import { ErrorComponent } from '../error/error.component';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-
   const dialog = inject(MatDialog);
 
   return next(req).pipe(
@@ -17,6 +16,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       });
       return throwError(() => new Error(error.error?.message || 'An unknown error occurred!'));
-    }
-  ));
+    })
+  );
 };

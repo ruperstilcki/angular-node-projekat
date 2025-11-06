@@ -1,4 +1,7 @@
-module.exports = {
+// Prettier konfiguracija u ESM modu
+// U ESM modu koristimo "export default" umesto "module.exports"
+
+export default {
   printWidth: 120, // Maksimalna širina linije pre prelama (120 karaktera)
   tabWidth: 2, // Širina indentacije = 2 razmaka
   useTabs: false, // Koristi razmake umesto tab karaktera

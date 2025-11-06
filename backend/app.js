@@ -1,38 +1,39 @@
-// Core modules
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const cors = require('cors');
+// --- Core modules ---
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-// Route handler for posts
-const postsRoutes = require('./routes/posts');
-const userRoutes = require('./routes/user');
+// --- Routes (Route handler for posts) ---
+import postsRoutes from './routes/posts.js';
+import userRoutes from './routes/user.js';
 
-// import Credentials and setup for MongoDB
-require('dotenv').config();
+// --- Init dotenv (for .env config) ---
+dotenv.config();
 
-// Initialize Express app
+// --- Create Express app ---
 const app = express();
 
-// Connect to MongoDB database
+// --- Connect to MongoDB ---
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log('Connected to database!');
-  })
-  .catch(() => {
-    console.log('Connection failed!');
-  });
+  .then(() => console.log('Connected to database!'))
+  .catch(() => console.log('Connection failed!'));
 
-// Middleware for parsing JSON and URL-encoded form data
+// --- Middleware (Middleware for parsing JSON and URL-encoded form data) ---
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Serve static image files from backend/images directory
-app.use('/images', express.static(path.join('backend/images')));
+// --- Serve static images (Serve static image files from backend/images directory) ---
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// CORS configuration
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// --- CORS setup ---
 app.use(
   cors({
     origin: 'http://localhost:4200', // or '*' for any origin
@@ -41,9 +42,10 @@ app.use(
   })
 );
 
-// Mount posts route handler under /api/posts path
-app.use('/api/posts', postsRoutes);
+// --- Routes ---
+app.use('/api/posts', postsRoutes); // Use posts routes for /api/posts endpoint
 app.use('/api/user', userRoutes);
 
-// Export the Express app
-module.exports = app;
+// --- Export app (Export the Express app) ---
+export default app;
+// --- End of file ---
