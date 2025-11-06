@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { AuthData, AuthDataResponse, AuthServiceDataModel } from '../models/auth-data.model';
 import { Router } from '@angular/router';
 
@@ -31,7 +31,16 @@ export class AuthService {
   createUser(authData: AuthData): Observable<string> {
     return this.http
       .post<{ message: string; result: AuthData }>('http://localhost:3000/api/user/signup/', authData)
-      .pipe(map(res => res.message));
+      .pipe(
+        map(res => {
+          this.router.navigate(['/login']);
+          return res.message;
+        }),
+        catchError(error => {
+          console.error('Signup failed:', error);
+          return throwError(() => new Error(error.error?.message || 'Signup failed!'));
+        })
+      );
   }
 
   getUserId() {

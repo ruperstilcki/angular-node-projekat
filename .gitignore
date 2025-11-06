@@ -43,3 +43,6 @@ Thumbs.db
 
 # Credentials and setup for MongoDB
 .env
+
+# Backend uploaded images
+/backend/images/

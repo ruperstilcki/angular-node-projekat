@@ -35,6 +35,13 @@ export class SignupComponent {
     if (this.form.invalid) {
       return;
     }
-    this.authService.createUser(this.form.getRawValue()).subscribe();
+    this.authService.createUser(this.form.getRawValue()).subscribe({
+      next: message => {
+        console.log('User created:', message);
+      },
+      error: err => {
+        console.error('Signup error:', err.message);
+      }
+    });
   }
 }
