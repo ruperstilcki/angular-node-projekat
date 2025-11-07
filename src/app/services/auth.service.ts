@@ -3,6 +3,7 @@ import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@a
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { AuthData, AuthDataResponse, AuthServiceDataModel } from '../models/auth-data.model';
 import { Router } from '@angular/router';
+import { AUTH_URL } from '../tokens/app-config.tokes';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { Router } from '@angular/router';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+
+  private readonly baseUrl: string = inject(AUTH_URL);
 
   private readonly token: WritableSignal<string | null> = signal(null);
   private readonly userId: WritableSignal<string | null> = signal(null);
@@ -29,18 +32,16 @@ export class AuthService {
   }
 
   createUser(authData: AuthData): Observable<string> {
-    return this.http
-      .post<{ message: string; result: AuthData }>('http://localhost:3000/api/user/signup/', authData)
-      .pipe(
-        map(res => {
-          this.router.navigate(['/login']);
-          return res.message;
-        }),
-        catchError(error => {
-          console.error('Signup failed:', error);
-          return throwError(() => new Error(error.error?.message || 'Signup failed!'));
-        })
-      );
+    return this.http.post<{ message: string; result: AuthData }>(this.baseUrl + 'signup', authData).pipe(
+      map(res => {
+        this.router.navigate(['/login']);
+        return res.message;
+      }),
+      catchError(error => {
+        console.error('Signup failed:', error);
+        return throwError(() => new Error(error.error?.message || 'Signup failed!'));
+      })
+    );
   }
 
   getUserId() {
@@ -52,7 +53,7 @@ export class AuthService {
   }
 
   login(authData: AuthData): Observable<string> {
-    return this.http.post<AuthDataResponse>('http://localhost:3000/api/user/login/', authData).pipe(
+    return this.http.post<AuthDataResponse>(this.baseUrl + 'login', authData).pipe(
       tap((res: AuthDataResponse) => {
         this.setAuthTimer(res.expiresIn * 1000);
         const expirationDate = new Date();

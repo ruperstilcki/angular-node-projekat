@@ -4,11 +4,14 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { Pagination, Post, PostRespons } from '../models/post.model';
+import { REST_URL } from '../tokens/app-config.tokes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  private readonly baseUrl: string = inject(REST_URL);
+
   // Writable signal to hold the list of posts
   private readonly posts: WritableSignal<Post[]> = signal<Post[]>([]);
 
@@ -21,7 +24,7 @@ export class PostService {
   });
 
   // Dependency injection for HTTP client
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   constructor() {
     // Automatically fetch posts when the service is initialized
@@ -75,7 +78,7 @@ export class PostService {
         message: string;
         posts: PostRespons[];
         maxPosts: number;
-      }>('http://localhost:3000/api/posts' + queryParams)
+      }>(this.baseUrl + queryParams)
       .pipe(
         // Update total number of posts for paginator
         tap(res => {
@@ -102,7 +105,7 @@ export class PostService {
    * Fetch a single post by ID from the backend
    */
   getPostHttp(postId: string): Observable<Post> {
-    return this.http.get<PostRespons>('http://localhost:3000/api/posts/' + postId).pipe(
+    return this.http.get<PostRespons>(this.baseUrl + postId).pipe(
       map(post => ({
         title: post.title,
         content: post.content,
@@ -121,9 +124,7 @@ export class PostService {
     postData.append('title', post.title);
     postData.append('content', post.content);
     postData.append('image', image, post.title);
-    return this.http
-      .post<{ message: string; post: Post }>('http://localhost:3000/api/posts/', postData)
-      .pipe(map(res => res.message));
+    return this.http.post<{ message: string; post: Post }>(this.baseUrl, postData).pipe(map(res => res.message));
   }
 
   /**
@@ -145,7 +146,7 @@ export class PostService {
     }
 
     return this.http
-      .put<{ message: string; post: Post }>('http://localhost:3000/api/posts/' + post.id, postData)
+      .put<{ message: string; post: Post }>(this.baseUrl + post.id, postData)
       .pipe(map(res => res.message));
   }
 
@@ -153,6 +154,6 @@ export class PostService {
    * Delete a post by its ID
    */
   deletePostHttp(postId: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>('http://localhost:3000/api/posts/' + postId);
+    return this.http.delete<{ message: string }>(this.baseUrl + postId);
   }
 }

@@ -1,5 +1,5 @@
 // --- Core modules ---
-import path from 'path';
+import path from 'node:path';
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
@@ -17,17 +17,19 @@ dotenv.config();
 const app = express();
 
 // --- Connect to MongoDB ---
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log('Connected to database!'))
-  .catch(() => console.log('Connection failed!'));
+try {
+  await mongoose.connect(process.env.MONGO_URL);
+  console.log('Connected to database!');
+} catch (error) {
+  console.log('Connection failed!', error);
+}
 
 // --- Middleware (Middleware for parsing JSON and URL-encoded form data) ---
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // --- Serve static images (Serve static image files from backend/images directory) ---
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
