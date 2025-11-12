@@ -32,4 +32,3 @@ jobs:
           projectId: angular-node-projekat-478018
           channelId: live
           entryPoint: .
-          hostingTarget: angular-node-projekat-478018
