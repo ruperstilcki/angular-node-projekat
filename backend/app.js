@@ -29,7 +29,6 @@ for (const key of requiredVars) {
   }
 }
 
-
 // --- Create Express app ---
 const app = express();
 
@@ -52,7 +51,6 @@ const connectDB = async () => {
 
 await connectDB();
 
-
 // --- Middleware (Middleware for parsing JSON and URL-encoded form data) ---
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -72,10 +70,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 //   })
 // );
-const allowedOrigins = new Set([
-  'http://localhost:4200',
-  'https://my-production-domain.com'
-]);
+const allowedOrigins = new Set(['http://localhost:4200', 'https://my-production-domain.com']);
 
 app.use(
   cors({
@@ -90,7 +85,6 @@ app.use(
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
   })
 );
-
 
 // --- Routes ---
 app.use('/api/posts', postsRoutes); // Use posts routes for /api/posts endpoint
