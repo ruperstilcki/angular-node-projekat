@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "angular-node-projekat-478018",
     "public": "dist/post/browser",
     "ignore": [
       "firebase.json",
