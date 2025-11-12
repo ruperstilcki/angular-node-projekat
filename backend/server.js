@@ -1,7 +1,9 @@
+// --- pokretanje servera ---
+
 // --- Core imports ---
-import http from 'http'; // Native Node.js HTTP module to create the server
+import http from 'node:http'; // Native Node.js HTTP module to create the server
 import debugLib from 'debug';
-import app from './backend/app.js'; // Import Express app (Import the configured Express app)
+import app from './app.js'; // Import Express app (Import the configured Express app)
 
 // import Credentials and setup for MongoDB
 import dotenv from 'dotenv';
@@ -13,8 +15,8 @@ const debug = debugLib('node-angular'); // Use Node's 'debug' module for logging
 /* Normalize Port Function */
 // Ensure that the port is a valid number, named pipe, or fallback
 const normalizePort = val => {
-  const port = parseInt(val, 10);
-  if (isNaN(port)) {
+  const port = Number.parseInt(val, 10);
+  if (Number.isNaN(port)) {
     // Named pipe
     // If not a number, treat as named pipe (used in Windows/IPC)
     return val;
@@ -57,6 +59,11 @@ const onListening = () => {
 // Set server port (from env variable or default to 3000)
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port); // Save it inside the Express app
+
+// Start the server and listen on the specified port
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
 /* Create and Start the HTTP Server */
 const server = http.createServer(app); // Create server with Express app

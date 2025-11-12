@@ -29,7 +29,7 @@ export async function createPost(req, res) {
     const filename = `${name}-${Date.now()}.${ext}`;
 
     // Save resized image to file system
-    await fs.writeFile(`backend/images/${filename}`, resizedImageBuffer);
+    await fs.writeFile(`images/${filename}`, resizedImageBuffer);
 
     const post = new Post({
       title: req.body.title,
@@ -71,7 +71,7 @@ export async function updatePost(req, res) {
       const ext = MIME_TYPE_MAP[req.file.mimetype];
       const filename = `${name}-${Date.now()}.${ext}`;
 
-      await fs.writeFile(`backend/images/${filename}`, resizedImageBuffer);
+      await fs.writeFile(`images/${filename}`, resizedImageBuffer);
       imagePath = `${url}/images/${filename}`;
     }
 
