@@ -1,5 +1,7 @@
 import sharp from 'sharp';
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import Post from '../models/post.js'; // Mongoose model for Post collection
 
 // Define allowed image MIME types and corresponding file extensions
@@ -8,6 +10,11 @@ const MIME_TYPE_MAP = {
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg'
 };
+
+// compute images directory reliably under backend/images
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const IMAGES_DIR = path.join(__dirname, '..', 'images');
 
 export async function createPost(req, res) {
   // Expect a single uploaded file under "image" field
@@ -28,8 +35,10 @@ export async function createPost(req, res) {
     const ext = MIME_TYPE_MAP[req.file.mimetype];
     const filename = `${name}-${Date.now()}.${ext}`;
 
+    // ensure images dir exists and save resized image to file system
+    await fs.mkdir(IMAGES_DIR, { recursive: true });
     // Save resized image to file system
-    await fs.writeFile(`images/${filename}`, resizedImageBuffer);
+    await fs.writeFile(path.join(IMAGES_DIR, filename), resizedImageBuffer);
 
     const post = new Post({
       title: req.body.title,
@@ -71,7 +80,8 @@ export async function updatePost(req, res) {
       const ext = MIME_TYPE_MAP[req.file.mimetype];
       const filename = `${name}-${Date.now()}.${ext}`;
 
-      await fs.writeFile(`images/${filename}`, resizedImageBuffer);
+      await fs.mkdir(IMAGES_DIR, { recursive: true });
+      await fs.writeFile(path.join(IMAGES_DIR, filename), resizedImageBuffer);
       imagePath = `${url}/images/${filename}`;
     }
 
