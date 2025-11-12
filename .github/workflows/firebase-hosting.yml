@@ -3,7 +3,7 @@ name: Deploy Angular app to Firebase Hosting
 on:
   push:
     branches:
-      - main  # or your default branch
+      - master  # or your default branch
 
 jobs:
   build_and_deploy:
