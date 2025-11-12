@@ -48,7 +48,7 @@ Thumbs.db
 .env.test
 
 # Backend uploaded images
-/backend/images/
+/images/
 
 # Zip files
 *.zip
