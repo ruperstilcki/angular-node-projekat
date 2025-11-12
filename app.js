@@ -72,9 +72,6 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // );
 const allowedOrigins = new Set([
   'http://localhost:4200',
-  'https://my-production-domain.com',
-  'https://angular-node-projekat.web.app',
-  'https://angular-node-projekat.firebaseapp.com',
   'https://angular-node-projekat-478018.web.app',
   'https://angular-node-projekat-478018.firebaseapp.com'
 ]);
