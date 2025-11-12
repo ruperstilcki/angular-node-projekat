@@ -52,3 +52,6 @@ Thumbs.db
 
 # Zip files
 *.zip
+
+# Firebase cache
+.firebase/

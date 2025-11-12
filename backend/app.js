@@ -70,7 +70,12 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 //   })
 // );
-const allowedOrigins = new Set(['http://localhost:4200', 'https://my-production-domain.com']);
+const allowedOrigins = new Set([
+  'http://localhost:4200',
+  'https://my-production-domain.com',
+  'https://angular-node-projekat.web.app',
+  'https://angular-node-projekat.firebaseapp.com'
+]);
 
 app.use(
   cors({
