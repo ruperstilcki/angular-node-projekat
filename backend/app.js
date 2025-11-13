@@ -61,6 +61,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+// app.use('/', express.static(path.join(__dirname, 'angular-dist/browser'))); // ONLY FOR FRONTEND INTEGRATED WITH BACKEND
 
 // --- CORS setup ---
 // app.use(
@@ -71,10 +72,11 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 //   })
 // );
 const allowedOrigins = new Set([
+  'http://localhost:3000',
   'http://localhost:4200',
-  'https://my-production-domain.com',
-  'https://angular-node-projekat.web.app',
-  'https://angular-node-projekat.firebaseapp.com'
+  'https://angular-node-projekat.onrender.com',
+  'https://angular-node-projekat-478018.web.app',
+  'https://angular-node-projekat-478018.firebaseapp.com'
 ]);
 
 app.use(
@@ -94,6 +96,10 @@ app.use(
 // --- Routes ---
 app.use('/api/posts', postsRoutes); // Use posts routes for /api/posts endpoint
 app.use('/api/user', userRoutes);
+ // ONLY FOR FRONTEND INTEGRATED WITH BACKEND
+/* app.use('/', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'backend/angular-dist/browser/index.html'));
+}); */
 
 // --- Export app (Export the Express app) ---
 export default app;

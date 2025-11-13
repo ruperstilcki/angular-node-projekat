@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Post from '../models/post.js'; // Mongoose model for Post collection
+import { getIO } from '../socket.js';
 
 // Define allowed image MIME types and corresponding file extensions
 const MIME_TYPE_MAP = {
@@ -50,6 +51,11 @@ export async function createPost(req, res) {
     const createdPost = await post.save();
     const plainPost = createdPost.toObject(); // Convert mongoose document to plain object
 
+    // Socket //
+    // Emit event to all other clients except the one that created it
+    const io = getIO();
+    io.emit('postCreated', post); // or socket.broadcast.emit if you have the socket ref
+
     res.status(201).json({
       message: 'Post added successfully',
       post: { ...plainPost, id: plainPost._id } // Rename _id to id for frontend compatibility
@@ -93,6 +99,11 @@ export async function updatePost(req, res) {
     };
 
     const result = await Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post);
+
+    // Socket //
+    // Emit event to all other clients except the one that created it
+    const io = getIO();
+    io.emit('postEdited', post); // or socket.broadcast.emit if you have the socket ref
 
     if (result.matchedCount > 0) {
       res.status(200).json({ message: 'Update successful!', post });

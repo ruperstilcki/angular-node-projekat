@@ -105,3 +105,16 @@ To run this project on your local machine, follow the steps below:
 ---
 
 ##
+
+GitHub project: https://github.com/ruperstilcki/angular-node-projekat
+
+Free NodeJs Deploy site: https://dashboard.render.com/
+test endpoint: https://angular-node-projekat.onrender.com/api/posts
+
+Free Angular deploy site: https://console.firebase.google.com/u/0/
+test endpoint: https://angular-node-projekat-478018.web.app/
+test endpoint: https://angular-node-projekat-478018.firebaseapp.com/
+
+service account: https://console.cloud.google.com/iam-admin/serviceaccounts/details/104428955895731861178?project=angular-node-projekat-478018&supportedpurview=project
+
+firebase local server: http://localhost:5000/

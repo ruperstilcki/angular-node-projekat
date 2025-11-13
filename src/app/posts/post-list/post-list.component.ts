@@ -1,6 +1,6 @@
 // post-list.component.ts
 
-import { Component, inject, OnInit, Signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, Signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
@@ -11,6 +11,8 @@ import { PostService } from '../../services/post.service';
 import { Pagination, Post } from '../../models/post.model';
 import { createPageEvent } from '../../helper';
 import { AuthService } from '../../services/auth.service';
+import { SocketService } from '../../services/socket.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-post-list',
@@ -22,6 +24,9 @@ export class PostListComponent implements OnInit {
   // Inject PostService instance
   postService = inject(PostService);
   authService = inject(AuthService);
+  socketService = inject(SocketService);
+
+  private readonly destroyRef = inject(DestroyRef); // Inject DestroyRef
 
   // Reactive signal for pagination configuration (total count, current page, etc.)
   readonly paginator: Signal<Pagination> = this.postService.getPaginationConfig();
@@ -42,7 +47,7 @@ export class PostListComponent implements OnInit {
    * Also closes all expanded accordion panels.
    */
   onDelete(postId: string) {
-    this.postService.deletePostHttp(postId).subscribe(() => {
+    this.postService.deletePostHttp(postId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.initPage();
       this.accordion?.closeAll();
     });

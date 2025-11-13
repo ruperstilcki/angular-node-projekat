@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-signup',
@@ -15,6 +16,8 @@ import { AuthService } from '../../services/auth.service';
 export class SignupComponent {
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
+
+    private readonly destroyRef = inject(DestroyRef); // Inject DestroyRef
 
   // Reactive form definition
   form: FormGroup = this.fb.group({
@@ -35,7 +38,7 @@ export class SignupComponent {
     if (this.form.invalid) {
       return;
     }
-    this.authService.createUser(this.form.getRawValue()).subscribe({
+    this.authService.createUser(this.form.getRawValue()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: message => {
         console.log('User created:', message);
       },

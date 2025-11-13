@@ -1,6 +1,6 @@
 // post-create.component.ts
 
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { filter, map, switchMap, tap } from 'rxjs';
 import { mimeType } from './mime-type.validators';
 import { PostService } from '../../services/post.service';
 import { Post } from '../../models/post.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-post-create',
@@ -36,6 +37,8 @@ export class PostCreateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  private readonly destroyRef = inject(DestroyRef); // Inject DestroyRef
 
   // Signal for holding the post ID if editing
   private readonly postId: WritableSignal<string | null> = signal<string | null>(null);
@@ -70,7 +73,8 @@ export class PostCreateComponent implements OnInit {
         map(paramMap => paramMap.get('postId') ?? null),
         tap(postId => this.postId.set(postId)),
         filter(postId => !!postId),
-        switchMap(postId => this.postService.getPostHttp(postId!))
+        switchMap(postId => this.postService.getPostHttp(postId!)),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(post => this.buildForm(post));
   }
@@ -95,7 +99,7 @@ export class PostCreateComponent implements OnInit {
       : this.postService.addPostHttp(form, image);
 
     // Execute API call and navigate back on success
-    postService.subscribe(() => {
+    postService.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.router.navigate(['/']);
     });
 
@@ -105,10 +109,10 @@ export class PostCreateComponent implements OnInit {
 
   // Reset form validation states
   resetValidationState() {
-    Object.values(this.form.controls).forEach(control => {
+    for (const control of Object.values(this.form.controls)) {
       control.markAsPristine();
       control.markAsUntouched();
-    });
+    }
   }
 
   // Handle file input for image and create preview

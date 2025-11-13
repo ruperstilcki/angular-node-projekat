@@ -1,10 +1,11 @@
 // post.service.ts
 
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { Pagination, Post, PostRespons } from '../models/post.model';
 import { REST_URL } from '../tokens/app-config.tokes';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,8 @@ export class PostService {
   // Dependency injection for HTTP client
   private readonly http = inject(HttpClient);
 
+    private readonly destroyRef = inject(DestroyRef); // Inject DestroyRef
+
   constructor() {
     // Automatically fetch posts when the service is initialized
     this.fetchInitialPosts();
@@ -35,7 +38,7 @@ export class PostService {
    * Load posts and update the local signal
    */
   fetchInitialPosts() {
-    this.getPostsHttp().subscribe(posts => {
+    this.getPostsHttp().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(posts => {
       this.posts.set(posts);
     });
   }
@@ -156,4 +159,14 @@ export class PostService {
   deletePostHttp(postId: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(this.baseUrl + postId);
   }
+
+    /**
+   * Locally add a new post to the signal list
+   * This avoids full refetching when a new post arrives via socket
+   */
+  addPostLocally(post: Post): void {
+    this.posts.update(current => [...current, post]); // add new post on top
+    this.paginator.update(p => ({ ...p, totalPosts: p.totalPosts + 1 }));
+  }
+
 }

@@ -11,6 +11,10 @@ import http from 'node:http'; // Native Node.js HTTP module for creating servers
 import debugLib from 'debug'; // Debug utility for logging
 import app from './app.js'; // Import configured Express app
 
+// SOCKET
+import { initSocket } from './socket.js';
+
+
 // --- Initialize debug logger ---
 const debug = debugLib('node-angular'); // Create a debug instance for namespaced logging
 
@@ -43,6 +47,11 @@ app.set('port', port); // Store the port inside Express app
 // -----------------------------
 // Create a new HTTP server that uses the Express app as a request handler
 const server = http.createServer(app);
+
+// -----------------------------
+// Initialize Socket.io
+// -----------------------------
+initSocket(server);  // initialize Socket.io with server
 
 // -----------------------------
 // Error Handler
